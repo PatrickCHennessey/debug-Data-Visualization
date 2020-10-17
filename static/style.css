@@ -31,7 +31,7 @@ img.vis_photo:hover {
 }
 
 .wrap_container {
-    background-color: gray;
+    background-color: white;
 }
 
 .container_padding {
@@ -52,13 +52,15 @@ img.vis_photo:hover {
     padding:0;
 }
 
-.h1{
+h1{
     color: #4aaaa5;
     font-weight: bold;
     margin-bottom: 1em;
+    text-align: center;
 }
-.h2{
-    color: #4aaaa5;  
+h2{
+    color: #4aaaa5;
+    text-align: center;  
 }
 .visualization{
     color: #4aaaa5;
