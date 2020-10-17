@@ -12,22 +12,26 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
     <link href="http://fonts.googleapis.com/css?family=Dosis:400,500,700" rel="stylesheet" type="text/css">
-    <!--<link href="https://fonts.googleapis.com/css?family=Abel" rel='stylesheet' type='text/css'>--> 
 </head>
 
 
 <style>
 
-body {
-  font-size: 1px;
+/* body {
+  font-size: 22px;
   font-family: 'Dosis', sans-serif;
   margin-top: 20px;
-}
+} */
 
 li{
     margin-left: 45px;
     }
 
+.songname {
+  font-size: 14px;
+  font-family: 'Dosis', sans-serif;
+  margin-top: 5px;
+}
 
 .bottomT{
   visibility: hidden;
@@ -44,7 +48,7 @@ li{
     }
 
 .y.axis line {
-    fill: none;
+    fill: white;
     stroke: #eeeeee;
     shape-rendering: crispEdges;
     }
@@ -64,38 +68,56 @@ path:hover{
 }
 
 .tick line{
-    stroke: #e0e1e1;
+    stroke: #000000;
     opacity: 1;
     }
 
-#title, .explain{
-      text-indent: 45px;
-    }
+.explain{
+      font-size: 18px;
+      font-family: 'Dosis', sans-serif;
+      margin-top: 8px;
+      text-indent: 80px;
+}
 
-#credit{
-      color:black;
-      text-indent: 20px;
-      line-height: 30px;
-    }
- 
+#title {
+      font-size: 45px;
+      font-family: 'Dosis', sans-serif;
+      margin-top: 20px;
+      text-indent: 50px;
+}
+
  a:hover{
       cursor:pointer;
     }
 
+#label {
+  font-size: 15px;
+  font-family: 'Dosis', sans-serif;
+  margin-top: 3px;
+  }
 
+.box {
+  min-height: 800px;
+  min-width: 400px;
+  padding: 10px;
+  margin-right: 800px;
+  font-weight: 400;
+  background-color: black;
+  align-content: flex-start;
+}
 </style>
 
 
 <body>
 <div>
 <h1 id="title">Top 20 Billboard Hot 100 Songs By Week</h1>
-<h2>{{ temp }}</h2>
-
 <p class="explain"> · Hover over a song's name tag to see the Hot 100 Trends for each week. </p>
 <p class="explain"> · Click on the Replay Button to replay the race.</p>
 <p class="explain"> · Click on the Pause Button to analyze the trends for a specific number of weeks.</p>
 </div>
-<div class="bs-example">
+
+<div class="row">
+<div class="col-md-10">
     <ul class="nav nav-pills" role="tablist">
       <li role="presentation" class="dropdown">
         <a id="drop4" data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -103,58 +125,53 @@ path:hover{
           <span class="caret"></span>
         </a>
         <ul id="menu1" class="dropdown-menu" aria-labelledby="drop4">
-          <li class="candidatename" value="1999"><a value="1999">1999</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2000</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2001</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2002</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2003</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2004</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2005</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2006</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2007</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2008</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2009</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2010</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2011</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2012</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2013</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2014</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2015</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2016</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2017</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2018</a></li>
-          <li class="candidatename"><a onclick=newYear(this.text)>2019</a></li>      
+          <li class="songname" value="1999"><a href="/line_chart_race/?year=1999"</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2000">2000</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2001">2001</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2002">2002</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2003">2003</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2004">2004</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2005">2005</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2006">2006</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2007">2007</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2008">2008</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2009">2009</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2010">2010</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2011">2011</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2012">2012</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2013">2013</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2014">2014</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2015">2015</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2016">2016</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2017">2017</a></li>
+          <li class="songname"><a href="/line_chart_race/?year=2018">2018</a></li>
+          <li class="songname"><a  href="/line_chart_race/?year=2019">2019</a></li>      
         </ul>
       </li>
       <li role="presentation" class="active" id="replay"><a data-target="#">Replay Race</a></li>
       <li role="presentation" class="btn btn-danger" id="pause">Pause</li>
-      <li role="presentation" class="btn btn-warning">Dark</li>
 
 
       
     </ul> 
-  </div> 
 
 <div id="graphic"></div>
-
-
-
+</div> 
 <script src="https://d3js.org/d3.v3.js"></script>
-<script type="text/javascript">
-    var table = {{ pivot_table }}
-    console.log(table)
-</script>
+
 <script>
 var paused = false;
-function drawGraphics(yearG, startWeek){
-console.log({{pivot_table}})
-d3.json({{  pivot_table  }}, function(error, data) { // `http://127.0.0.1:5000/line_chart_race/?year=${yearG}`
 
-  var margin = {top: 50, right: 160, bottom: 10, left: 50},
+function drawGraphics(yearG, startWeek){
+
+
+d3.json(`http://127.0.0.1:5000/chart/api/?year=${yearG}`, function(error, data) { //
+
+  var margin = {top: 50, right: 180, bottom: 10, left: 50},
     width = 1000 - margin.left - margin.right,
     height = 700 - margin.top - margin.bottom;
 
-var speed = 1000;
+var speed = 100;
 
 var x = d3.scale.linear()
     .range([0, width]);
@@ -461,7 +478,7 @@ var round = candidates.append("circle")
       });
 
 
-    $(".candidatename").on("click",function(){
+    $(".songname").on("click",function(){
       var nameOfCandidate = $(this).text();
         candidates.style("opacity",0.1);
         candidates.filter(function(path) {
@@ -490,20 +507,31 @@ var round = candidates.append("circle")
 
         function resize() {
             var targetWidth = parseInt(container.style("width"));
-            svg.attr("width", targetWidth * 0.8);
-            svg.attr("height", Math.round(targetWidth /aspect * 0.8));
+            svg.attr("width", targetWidth * 0.86);
+            svg.attr("height", Math.round(targetWidth /aspect * 0.86));
         }  
     }
 
 }
 
 </script>
+<div class="col-md-2">
+  <div class="box" style="margin-right: 300px"></div>
+    Some Text
+    <!-- <svg width="1200" height="6000" style="margin-right: 1300px">
+      <rect width="600" height="8000"></rect>
+    </svg> -->
+  
+</div>
+</div>
+</div>
+
 
 </body>
 
 <script>
-
-drawGraphics(2016, 1)
+let wantedYear = parseInt({{pyyear}})
+drawGraphics(wantedYear, 1)
 
 d3.select("#replay")
     .on("click", function(){
@@ -522,5 +550,4 @@ function newYear(yearG){
 }
 
 </script>
-
 </html>

@@ -24,6 +24,6 @@ def manipulate_data(df, year):
     data_table = data_table.fillna(value=22)
     data_table = data_table.reset_index()
     data_table.Week_Number = data_table.Week_Number.astype(np.int32)
-    response = data_table.to_json(orient="index")
+    response = data_table.to_json(orient="records")
     return response
 
