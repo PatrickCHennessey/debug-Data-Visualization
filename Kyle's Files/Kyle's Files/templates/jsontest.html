@@ -11,6 +11,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.13.0/d3-legend.min.js"></script>
     <link href="http://fonts.googleapis.com/css?family=Dosis:400,500,700" rel="stylesheet" type="text/css">
 </head>
 
@@ -97,20 +98,19 @@ path:hover{
   }
 
 .box {
-  min-height: 800px;
-  min-width: 400px;
-  padding: 10px;
-  margin-right: 800px;
-  font-weight: 400;
-  background-color: black;
-  align-content: flex-start;
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  border: 2px solid;
 }
 </style>
 
 
 <body>
 <div>
-<h1 id="title">Top 20 Billboard Hot 100 Songs By Week</h1>
+<h1 id="title">Top 20 Billboard Hot 100 Songs By Week Grouped By Super Genre</h1>
+<div id="container" style="margin-left: 20px">
+</div>
 <p class="explain"> · Hover over a song's name tag to see the Hot 100 Trends for each week. </p>
 <p class="explain"> · Click on the Replay Button to replay the race.</p>
 <p class="explain"> · Click on the Pause Button to analyze the trends for a specific number of weeks.</p>
@@ -125,7 +125,7 @@ path:hover{
           <span class="caret"></span>
         </a>
         <ul id="menu1" class="dropdown-menu" aria-labelledby="drop4">
-          <li class="songname" value="1999"><a href="/line_chart_race/?year=1999"</a></li>
+          <li class="songname" value="1999"><a href="/line_chart_race/?year=1999">1999</a></li>
           <li class="songname"><a href="/line_chart_race/?year=2000">2000</a></li>
           <li class="songname"><a href="/line_chart_race/?year=2001">2001</a></li>
           <li class="songname"><a href="/line_chart_race/?year=2002">2002</a></li>
@@ -148,8 +148,10 @@ path:hover{
           <li class="songname"><a  href="/line_chart_race/?year=2019">2019</a></li>      
         </ul>
       </li>
+      <li role="presentation" class="btn" id="home"><a href="/">Home Page</a></li> 
       <li role="presentation" class="active" id="replay"><a data-target="#">Replay Race</a></li>
       <li role="presentation" class="btn btn-danger" id="pause">Pause</li>
+      
 
 
       
@@ -171,7 +173,7 @@ d3.json(`http://127.0.0.1:5000/chart/api/?year=${yearG}`, function(error, data) 
     width = 1000 - margin.left - margin.right,
     height = 700 - margin.top - margin.bottom;
 
-var speed = 100;
+var speed = 1000;
 
 var x = d3.scale.linear()
     .range([0, width]);
@@ -507,8 +509,8 @@ var round = candidates.append("circle")
 
         function resize() {
             var targetWidth = parseInt(container.style("width"));
-            svg.attr("width", targetWidth * 0.86);
-            svg.attr("height", Math.round(targetWidth /aspect * 0.86));
+            svg.attr("width", targetWidth * 0.8);
+            svg.attr("height", Math.round(targetWidth /aspect * 0.8));
         }  
     }
 
@@ -516,9 +518,13 @@ var round = candidates.append("circle")
 
 </script>
 <div class="col-md-2">
-  <div class="box" style="margin-right: 300px"></div>
-    Some Text
-    <!-- <svg width="1200" height="6000" style="margin-right: 1300px">
+  
+  <!--<div class="box" style="margin-right: 300px">
+  <b>Some Text</b>
+  
+  </div>-
+    
+    <svg width="1200" height="6000" style="margin-right: 1300px">
       <rect width="600" height="8000"></rect>
     </svg> -->
   
@@ -549,5 +555,50 @@ function newYear(yearG){
   drawGraphics(yearG, 1)
 }
 
+var log = d3.scale.log()
+    .domain([ 0.1, 100, 1000 ])
+    .range(["rgb(46, 73, 123)", "rgb(71, 187, 94)"]);
+
+var svg = d3.select("svg");
+
+svg.append("g")
+  .attr("class", "legendLog")
+  .attr("transform", "translate(20,20)");
+
+var logLegend = d3.legend.color()
+    .cells([0.1, 5, 10, 50, 100, 500, 1000])
+    .scale(log);
+
+svg.select(".legendLog")
+  .call(logLegend);
+
+</script>
+<script>
+  var colorList = {Reggae: "#e377c2", Electronic: "#ffbb78", Folk: "#8c564b",
+  'R&B': "#ce3b69", Pop: "#9467bd",  Country: "#ff7f0e", Rap: "#2ca02c",
+  Rock: "#8c564b", "Pop-Rock": "#ce3b69", Other: "#9467bd"};
+
+colorize = function(colorList) {
+    var container = document.getElementById('container');
+  
+    for (var key in colorList) {
+        var boxContainer = document.createElement("DIV");
+        var box = document.createElement("DIV");
+        var label = document.createElement("SPAN");
+
+        label.innerHTML = key;
+        box.className = "box";
+        box.style.backgroundColor = colorList[key];
+
+        boxContainer.appendChild(box);
+        boxContainer.appendChild(label);
+
+        container.appendChild(boxContainer);
+        
+
+   }
+}
+
+colorize(colorList);
 </script>
 </html>
