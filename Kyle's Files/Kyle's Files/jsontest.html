@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>Hot 100</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <link href="http://fonts.googleapis.com/css?family=Dosis:400,500,700" rel="stylesheet" type="text/css">
+    <!--<link href="https://fonts.googleapis.com/css?family=Abel" rel='stylesheet' type='text/css'>--> 
+</head>
+
+
+<style>
+
+body {
+  font-size: 16px;
+  font-family: 'Dosis', sans-serif;
+  margin-top: 20px;
+}
+
+li{
+    margin-left: 0px;
+    }
+
+
+.bottomT{
+  visibility: hidden;
+}
+
+
+.x.axis path,.x.axis line {
+    fill: none;
+    stroke: none;
+    }
+
+.y.axis path {
+    fill: none;
+    }
+
+.y.axis line {
+    fill: none;
+    stroke: #eeeeee;
+    shape-rendering: crispEdges;
+    }
+
+.x.axis text, .y.axis text{
+      font-size: 10px;
+      fill:grey;
+    }
+
+.line {
+  fill: none;
+  stroke-width: 2px;
+}
+
+path:hover{
+  cursor: pointer;
+}
+
+.tick line{
+    stroke: #e0e1e1;
+    opacity: 1;
+    }
+
+#title, .explain{
+      text-indent: 15px;
+    }
+
+#credit{
+      color:grey;
+      text-indent: 20px;
+      line-height: 30px;
+    }
+ 
+ a:hover{
+      cursor:pointer;
+    }
+
+
+</style>
+
+
+<body>
+<div>
+<h1 id="title">Top 20 Billboard Hot 100 Songs By Week</h1>
+
+<p class="explain"> · Hover over a song's name tag to see the Hot 100 Trends for each week. </p>
+<p class="explain"> · Click on the Replay Button to replay the race.</p>
+<p class="explain"> · Click on the Pause Button to analyze the trends for a specific number of weeks.</p>
+</div>
+<div class="bs-example">
+    <ul class="nav nav-pills" role="tablist">
+      <li role="presentation" class="dropdown">
+        <a id="drop4" data-target="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+          Years
+          <span class="caret"></span>
+        </a>
+        <ul id="menu1" class="dropdown-menu" aria-labelledby="drop4">
+          <li class="candidatename"><a data-target="#">1999</a></li>
+          <li class="candidatename"><a data-target="#">2000</a></li>
+          <li class="candidatename"><a data-target="#">2001</a></li>
+          <li class="candidatename"><a data-target="#">2002</a></li>
+          <li class="candidatename"><a data-target="#">2003</a></li>
+          <li class="candidatename"><a data-target="#">2004</a></li>
+          <li class="candidatename"><a data-target="#">2005</a></li>
+          <li class="candidatename"><a data-target="#">2006</a></li>
+          <li class="candidatename"><a data-target="#">2007</a></li>
+          <li class="candidatename"><a data-target="#">2008</a></li>
+          <li class="candidatename"><a data-target="#">2009</a></li>
+          <li class="candidatename"><a data-target="#">2010</a></li>
+          <li class="candidatename"><a data-target="#">2011</a></li>
+          <li class="candidatename"><a data-target="#">2012</a></li>
+          <li class="candidatename"><a data-target="#">2013</a></li>
+          <li class="candidatename"><a data-target="#">2014</a></li>
+          <li class="candidatename"><a data-target="#">2015</a></li>
+          <li class="candidatename"><a data-target="#">2016</a></li>
+          <li class="candidatename"><a data-target="#">2017</a></li>
+          <li class="candidatename"><a data-target="#">2018</a></li>
+          <li class="candidatename"><a data-target="#">2019</a></li>      
+        </ul>
+      </li>
+      <li role="presentation" class="active" id="replay"><a data-target="#">Replay Race</a></li>
+      <li role="presentation" class="btn btn-danger" id="pause">Pause</li>
+
+
+      
+    </ul> 
+  </div> 
+
+<div id="graphic"></div>
+
+
+
+<script src="https://d3js.org/d3.v3.js"></script>
+
+<script>
+var paused = false;
+function drawGraphics(yearG, startWeek){
+
+d3.json("ugly.json", function(error, data) {
+
+  var margin = {top: 50, right: 160, bottom: 10, left: 50},
+    width = 1000 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
+
+var speed = 1000;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .tickSize(0)
+    .ticks(52)
+    .orient("top");
+
+//var xtickLabels = ["Dec 28, 2014","Jan 4, 2015","Jan 11, 2015","Jan 18, 2015","Jan 25, 2015","Feb 1,2015","Feb 8, 2015","Feb 15, 2015","Feb 22, 2015","Mar 1, 2015","Mar 8, 2015","Mar 15, 2015","Mar 22, 2015","Mar 29, 2015","Apr 5, 2015","Apr 12, 2015","Apr 19, 2015","Apr 26, 2015","May 3, 2015","May 10, 2015","May 17, 2015","May 24, 2015","May 31, 2015","Jun 7, 2015","Jun 14, 2015", "Jun 21, 2015", "Jun 28, 2015"];
+
+var xtickLabels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10" , "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+                  "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52"]
+
+xAxis.tickFormat(function(d,i){
+    return xtickLabels[i]
+  });
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .tickFormat(function(d) { return d;})
+    .ticks(16)
+    .innerTickSize(- width)
+    .tickPadding(10)
+    .outerTickSize(0)
+    .orient("left");
+
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d.week); })
+    .y(function(d) { return y(d.rank); });
+
+
+var svg = d3.select("#graphic").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .call(responsivefy)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var clip = svg.append("clipPath")
+    .attr("id", "clip")
+    .append("rect")
+    .attr("x","-5")
+    .attr("y","-20")
+    .attr("width", 0)
+    .attr("height", height*1.2);
+  
+  var color = d3.scale.category20();
+
+  console.log("This is data")
+  console.log(data[0])
+  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "Week_Number"; }));
+
+  data.forEach(function(d) {
+    d.Week_Number = +[d.Week_Number];
+  });
+
+
+  var candidates = color.domain().map(function(name) {
+    return {
+      name: name,
+      values: data.map(function(d) {
+        if ((d[name]) === null){
+            d.rank = 22
+          } else if (parseInt(d[name]) > 20){
+            d.rank = 21
+          } else {
+            d.rank = +[d[name]]
+          }
+
+
+        return {name:name, week: d.Week_Number, rank: d.rank};
+      })
+    };
+  });
+
+  console.log("These are Candidates")
+  console.log(candidates)//.slice(-1))
+
+  x.domain([1, 52]);
+
+
+  y.domain([
+    d3.min(candidates, function(c) { return d3.min(c.values, function(v) { return v.rank ; }); }),
+    (d3.max(candidates, function(c) { return d3.max(c.values, function(v) { return v.rank ; }); })-1)
+  ].reverse());
+
+
+svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform","translate(0,0)")
+      .call(xAxis)
+      .selectAll("text")
+      .style("text-anchor","start")
+      .attr("dx", "2.3em")
+      .attr("dy", "-0.9em") 
+      .attr("transform",function(d){
+        return "rotate(-60)"});
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+
+  //timeline 
+  svg.append("line")
+        .attr(
+        {
+            "class":"horizontalGrid",
+            "x1" : -2,
+            "x2" : width,
+            "y1" : y(1) - 13,
+            "y2" : y(1) - 13,
+            "fill" : "none",
+            "shape-rendering" : "crispEdges",
+            "stroke" : "#e0e1e1",
+            "stroke-width" : "1px",
+            "stroke-dasharray": ("3, 3")
+        })
+        .attr("id","dotted")
+        .attr("clip-path", function(d) { return "url(#clip)"; });
+
+
+        
+       
+  //end of timeline
+  console.log("CANS")
+  console.log(candidates)
+
+  var candidates = svg.selectAll(".candidate")
+      .data(candidates)
+    .enter().append("g")
+      .attr("class", "candidate");
+
+
+ function colorFilter(d){
+    if (d.name.slice(-1) == 0) {
+          return "#e377c2"; // Reggae 
+      } else if (d.name.slice(-1) == 9) {
+          return "#ffbb78"; // Electronic
+      } else if (d.name.slice(-1) == 8){
+        return "#8c564b"; // Folk 
+      } else if (d.name.slice(-1) == 7){
+        return "#ce3b69"; // R & B
+      } else if (d.name.slice(-1) == 6){
+        return "#9467bd"; // Pop 
+      } else if (d.name.slice(-1) == 5){
+          return "#ff7f0e"; // Country 
+    } else if (d.name.slice(-1) == 4){
+          return "#2ca02c"; // Rap 
+    } else if (d.name.slice(-1) == 3){
+          return "#8c564b"; // Rock
+    } else if (d.name.slice(-1) == 2){
+          return "#ce3b69"; // Pop-Rock
+    } else {
+          return "#9467bd"//"#d62728"
+    }
+}
+  var path = svg.selectAll(".candidate").append("path")
+      .attr("class", "line")
+      .attr("d", function(d) {
+        console.log(d.values)
+        return line(d.values); })
+      .attr("clip-path", function(d) { return "url(#clip)"; })
+      .style("stroke", colorFilter)
+
+    
+
+var circleStart = candidates.append("circle")
+      .attr("cx", "0")
+      .attr("cy", function(d) { return y(d.values[0].rank); })
+      .style("fill", colorFilter)
+      .attr("r", 2)
+
+ 
+
+var circleEnd = candidates.append("circle")
+      .attr("cx", function(d) { return x(d.values[0].week); })
+      .attr("cy", function(d) { return y(d.values[0].rank);} )
+      .style("fill", colorFilter)
+      .attr("r", 2);
+
+// <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill-rule="evenodd" d="M11.553 3.064A.75.75 0 0112 3.75v16.5a.75.75 0 01-1.255.555L5.46 16H2.75A1.75 1.75 0 011 14.25v-4.5C1 8.784 1.784 8 2.75 8h2.71l5.285-4.805a.75.75 0 01.808-.13zM10.5 5.445l-4.245 3.86a.75.75 0 01-.505.195h-3a.25.25 0 00-.25.25v4.5c0 .138.112.25.25.25h3a.75.75 0 01.505.195l4.245 3.86V5.445z"></path><path d="M18.718 4.222a.75.75 0 011.06 0c4.296 4.296 4.296 11.26 0 15.556a.75.75 0 01-1.06-1.06 9.5 9.5 0 000-13.436.75.75 0 010-1.06z"></path><path d="M16.243 7.757a.75.75 0 10-1.061 1.061 4.5 4.5 0 010 6.364.75.75 0 001.06 1.06 6 6 0 000-8.485z"></path></svg>
+var timemark = candidates.append("path")
+                  .attr("d", d3.svg.symbol().type("triangle-up"))
+                  .style("fill", "grey")
+                  .attr("transform",function(d) { return "translate(" + (x(d.values[0].week) ) + "," + (y(1)-15) + ") rotate(-30)"; })
+
+
+var round = candidates.append("circle")
+      .attr("transform", function(d) { return "translate(" + (x(d.values[0].week) + 15) + "," + (y(d.values[0].rank)) + ")"; })
+      .attr("x", 0)
+      .attr("y",0)
+      .attr("r", 10)
+      .on("mouseover", function (d) {
+        candidates.style("opacity",0.1);
+        candidates.filter(function(path) {return path.name === d.name; }).style("opacity",1);
+      })
+      .on("mouseout", function (d) { candidates.style("opacity",1); })
+      .style("fill", colorFilter);
+
+
+  var ranking = candidates.append("text")
+      .attr("transform", function(d) { return "translate(" + (x(d.values[0].week) + 15 ) + "," + (y(d.values[0].rank) ) + ")"; })
+      .attr("x", 0)
+      .attr("dy", ".31em")
+      .attr("text-anchor","middle")
+      .on("mouseover", function (d) {
+        candidates.style("opacity",0.1);
+        candidates.filter(function(path) {return path.name === d.name; }).style("opacity",1);
+      })
+      .on("mouseout", function (d) { candidates.style("opacity",1); })
+      .style("cursor","pointer")
+      .style("fill", "#ffffff")
+      .style("font-weight", "bold")
+      .text(function(d) {
+        if (d.values[0].rank > 20){
+          //this.classed("visbility", false)
+          return "X"
+        } else {
+          return d.values[0].rank;  
+        }
+      });
+
+
+  var label = candidates.append("text")
+      .attr("transform", function(d) { return "translate(" + (x(d.values[0].week) + 20) + "," + (y(d.values[0].rank) ) + ")"; })
+      .attr("x", 8)
+      .attr("dy", ".31em")
+      .attr("id","label")
+      .on("mouseover", function (d) {
+        candidates.style("opacity",0.1);
+        candidates.filter(function(path) {return path.name === d.name; }).style("opacity",1);
+      })
+      .on("mouseout", function (d) { candidates.style("opacity",1); })
+      .style("cursor","pointer")
+      .style("stroke", colorFilter)
+      .text(function(d) { return d.name; });
+
+  
+
+
+  var week = startWeek;
+
+  var transition = d3.transition()
+    .delay(2000)
+    .duration(speed)
+    .each("start", function start() {     
+          
+      label.transition()
+        .duration(speed)
+        .ease('linear')
+      .attr("transform", function(d) { return "translate(" + (x(d.values[week].week) + 20) + "," + (y(d.values[week].rank)) + ")"; })
+      .text(function(d) { return  d.name.slice(0, -1); });
+
+      ranking.transition()
+        .duration(speed)
+        .ease('linear')
+        .attr("transform", function(d) { return "translate(" + (x(d.values[week].week) + 15) + "," + (y(d.values[week].rank) ) + ")"; })
+      .text(function(d,i) {
+        if (d.values[week].rank > 20){
+          return "X"
+        } else{
+          return  d.values[week].rank; 
+        }});
+
+      round.transition()
+        .duration(speed)
+        .ease('linear')
+        .attr("transform", function(d) { return "translate(" + (x(d.values[week].week) + 15) + "," + (y(d.values[week].rank)) + ")"; });
+    
+      circleEnd.transition()
+        .duration(speed)
+        .ease('linear')
+        .attr("cx", function(d) { return x(d.values[week].week); })
+        .attr("cy", function(d) { return y(d.values[week].rank); });
+
+      clip.transition()
+        .duration(speed)
+        .ease('linear')
+        .attr("width", x(week+1)+5)
+        .attr("height", height*1.2);
+
+      timemark.transition()
+         .duration(speed)
+         .ease('linear')
+         .attr("transform",function(d) { return "translate(" + (x(d.values[week].week) ) + "," + (y(1)-15) + ") rotate(-30)"; })
+
+    
+      if (!paused){
+        week+=1;
+      } else {
+        transition = transition.transition().each("start", week)
+      }
+
+
+      if (week !== data[0].length){
+
+        transition = transition.transition().each("start", start);}     
+      });
+
+
+    $(".candidatename").on("click",function(){
+      var nameOfCandidate = $(this).text();
+        candidates.style("opacity",0.1);
+        candidates.filter(function(path) {
+          return path.name === nameOfCandidate;
+        }).style("opacity",1);
+      });
+
+
+
+      
+   });
+
+      
+      function responsivefy(svg) {
+
+        var container = d3.select(svg.node().parentNode),
+            width = parseInt(svg.style("width")),
+            height = parseInt(svg.style("height")),
+            aspect = width / height;
+
+        svg.attr("viewBox", "0 0 " + width + " " + height)
+            .attr("perserveAspectRatio", "xMinYMid")
+            .call(resize);
+
+        d3.select(window).on("resize." + container.attr("#graphic"), resize);
+
+        function resize() {
+            var targetWidth = parseInt(container.style("width"));
+            svg.attr("width", targetWidth * 0.8);
+            svg.attr("height", Math.round(targetWidth /aspect * 0.8));
+        }  
+    }
+
+}
+
+</script>
+
+</body>
+
+<script>
+
+drawGraphics(2000, 1)
+
+d3.select("#replay")
+    .on("click", function(){
+      location.reload()
+    })
+
+d3.select("#pause").on("click", function(){
+  paused = !paused;
+})
+
+</script>
+
+</html>

@@ -22,6 +22,8 @@ def manipulate_data(df, year):
     df = df.loc[:, ["Week", "Week_Number", "nname", "Weekly_rank", "Namey"]]
     data_table = df.pivot_table(index="Namey", columns="Week_Number", values="Weekly_rank").T
     data_table = data_table.fillna(value=22)
+    data_table = data_table.reset_index()
+    data_table.Week_Number = data_table.Week_Number.astype(np.int32)
     response = data_table.to_json(orient="index")
     return response
 
