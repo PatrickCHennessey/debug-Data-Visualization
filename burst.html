@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-sunburst.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-data-adapter.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/themes/dark_turquoise.min.js"></script>
+        <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+        <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+        <style type="text/css">
+      
+          html,
+          body,
+          #container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+          }
+        
+      </style>
+      </head>
+      <body>
+        
+        <div id="container"></div>
+        
+      
+        <script>
+      
+          anychart.onDocumentReady(function () {
+          // set chart theme
+      anychart.theme('darkTurquoise');
+            // The data used in this sample can be obtained from the CDN
+            // https://cdn.anychart.com/samples/sunburst-charts/gold-medal-winners-at-the-sochi-olympics/data.json
+            anychart.data.loadJsonFile('new_merged_df.json',
+              function (data) {
+                // makes tree from the data for the sample
+                var dataTree = anychart.data.tree(data);
+      
+                // create sunburst chart
+                var chart = anychart.sunburst(dataTree);
+      
+                // set calculation mode
+                chart.calculationMode('parent-independent');
+      
+                // Ascending sort data
+                chart.sort('asc');
+      
+                // set labels position for last level
+                chart.level(-1).labels().position('circular');
+                // hide last level
+                chart.level(-1).enabled(false);
+      
+                // set inner radius
+                chart.innerRadius('20%');
+      
+                // set thickness for level
+                chart.level(1).thickness('35%');
+      
+                // hide first level
+                chart.level(0).enabled(false);
+      
+                // set labels settings
+                chart
+                  .labels()
+                  // set labels position
+                  .position('radial')
+                  // format chart labels
+                  .format('{%Name}');
+      
+                // format chart tooltip
+                chart.tooltip().format('Genre: {%leavesSum}');
+      
+                // get chart statistic
+                var statistic = chart.getStat();
+                // get medals count from chart statistic
+                var entryCount = statistic.levels[statistic.treemaxdepth].sum;
+      
+                // create standalone label and set settings
+                var centerLabel = anychart.standalones.label();
+                centerLabel
+                  .enabled(true)
+                  .text(entryCount + '\nEntries')
+                  .width('100%')
+                  .height('100%')
+                  .adjustFontSize(true, true)
+                  .minFontSize(10)
+                  .maxFontSize(20)
+                  .position('center')
+                  .anchor('center')
+                  .hAlign('center')
+                  .vAlign('middle');
+      
+                // set label to center content of chart
+                chart.center().content(centerLabel);
+      
+                // set container id for the chart
+                chart.container('container');
+                // initiate chart drawing
+                chart.draw();
+      
+                // listen drill change
+                chart.listen('drillChange', function (e) {
+                  var lastLevel = chart.level(-1);
+                  var penultimateLevel = chart.level(-2);
+                  // get leavesSum if drillDown exist
+                  var songs =
+                    (e.current && e.current.node.meta('leavesSum')) || entryCount;
+                  // set 2 because first level hidden
+                  var maxPathLength = 2;
+      
+                  // if drillDown
+                  if (e.path.length >= maxPathLength) {
+                    // show last level
+                    lastLevel.enabled(true);
+                    // set settings for penultimate level labels
+                    penultimateLevel.labels().position('circular');
+      
+                    // set text for center content
+                    centerLabel.text(songs + '\nEntries');
+                  } else {
+                    // hide last level
+                    lastLevel.enabled(false);
+                    // set settings for penultimate level labels
+                    penultimateLevel.labels().position('radial');
+      
+                    // set text for center content
+                    centerLabel.text(medals + '\nMedals');
+                  }
+                });
+              }
+            );
+          });
+        
+      </script>
+      </body>
+      </html>
